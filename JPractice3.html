@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVG Drawing Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    svg {
+      border: 2px solid black;
+      width: 600px;
+      height: 400px;
+      background: #f9f9f9;
+      cursor: crosshair;
+    }
+  </style>
+</head>
+<body>
+  <h2>SVG Drawing Tool</h2>
+  <svg id="drawingArea"></svg>
+
+  <script>
+    const svg = document.getElementById("drawingArea");
+    let drawing = false;
+    let rect = null;
+    let startX, startY;
+
+    // When mouse is pressed down → start drawing
+    svg.addEventListener("mousedown", (e) => {
+      drawing = true;
+      startX = e.offsetX;
+      startY = e.offsetY;
+
+      rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      rect.setAttribute("x", startX);
+      rect.setAttribute("y", startY);
+      rect.setAttribute("width", 0);
+      rect.setAttribute("height", 0);
+      rect.setAttribute("stroke", "blue");
+      rect.setAttribute("fill", "transparent");
+      rect.setAttribute("stroke-width", "2");
+
+      svg.appendChild(rect);
+    });
+
+    // While moving mouse → update rectangle size
+    svg.addEventListener("mousemove", (e) => {
+      if (!drawing) return;
+      let currentX = e.offsetX;
+      let currentY = e.offsetY;
+
+      let width = currentX - startX;
+      let height = currentY - startY;
+
+      rect.setAttribute("width", Math.abs(width));
+      rect.setAttribute("height", Math.abs(height));
+      rect.setAttribute("x", Math.min(startX, currentX));
+      rect.setAttribute("y", Math.min(startY, currentY));
+    });
+
+    // Mouse released → stop drawing
+    svg.addEventListener("mouseup", () => {
+      drawing = false;
+    });
+  </script>
+</body>
+</html>
